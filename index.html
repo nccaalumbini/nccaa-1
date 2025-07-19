@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCCAA Lumbini Cadet System</title>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loader {
+            border-top-color: #808000;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-olive-50 to-olive-200 min-h-screen font-sans">
+    <!-- Sidebar -->
+    <aside class="fixed top-0 left-0 h-full w-64 bg-olive-700 text-white flex flex-col z-50 shadow-xl">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-olive-600">
+            <img src="https://via.placeholder.com/40/808000/FFFFFF?text=NCC" alt="NCC Logo"
+                class="rounded-full border-2 border-white">
+            <span class="text-xl font-bold ml-2">NCCAA</span>
+        </div>
+        <nav class="flex-1 px-6 py-4 space-y-2">
+            <button onclick="showScreen('dashboard')"
+                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-olive-600 transition font-semibold">
+                <span>🏠</span> <span lang="en">Dashboard</span><span lang="np" class="hidden">ड्यासबोर्ड</span>
+            </button>
+            <button onclick="showScreen('addCadet')"
+                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-olive-600 transition font-semibold">
+                <span>➕</span> <span lang="en">Add Cadet</span><span lang="np" class="hidden">क्याडेट थप्नुहोस्</span>
+            </button>
+            <button onclick="showScreen('viewCadets')"
+                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-olive-600 transition font-semibold">
+                <span>👥</span> <span lang="en">View Cadets</span><span lang="np" class="hidden">क्याडेट सूची</span>
+            </button>
+        </nav>
+        <div class="px-6 py-4 border-t border-olive-600 flex flex-col gap-2">
+            <div class="flex gap-2">
+                <button onclick="switchLanguage('en')"
+                    class="px-3 py-1 bg-white text-olive-700 rounded-full font-semibold shadow hover:bg-olive-100 transition">EN</button>
+                <button onclick="switchLanguage('np')"
+                    class="px-3 py-1 bg-white text-olive-700 rounded-full font-semibold shadow hover:bg-olive-100 transition">ने</button>
+            </div>
+            <button onclick="logout()"
+                class="mt-2 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-full font-semibold shadow transition flex items-center gap-2">
+                <span lang="en">Logout</span>
+                <span lang="np" class="hidden">लगआउट</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64 min-h-screen">
+        <!-- Dashboard -->
+        <div id="dashboard" class="container mx-auto p-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center border-2 border-olive-200">
+                    <h3 class="text-olive-600 mb-2 font-semibold" lang="en">Total Cadets</h3>
+                    <h3 class="text-olive-600 mb-2 hidden font-semibold" lang="np">कुल क्याडेट</h3>
+                    <p id="totalCadets" class="text-4xl font-extrabold text-olive-700">0</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center border-2 border-blue-100">
+                    <h3 class="text-blue-600 mb-2 font-semibold" lang="en">Male Cadets</h3>
+                    <h3 class="text-blue-600 mb-2 hidden font-semibold" lang="np">पुरुष क्याडेट</h3>
+                    <p id="maleCadets" class="text-4xl font-extrabold text-blue-700">0</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center border-2 border-pink-100">
+                    <h3 class="text-pink-600 mb-2 font-semibold" lang="en">Female Cadets</h3>
+                    <h3 class="text-pink-600 mb-2 hidden font-semibold" lang="np">महिला क्याडेट</h3>
+                    <p id="femaleCadets" class="text-4xl font-extrabold text-pink-700">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Cadet Form -->
+        <div id="addCadet" class="container mx-auto p-8 hidden">
+            <div class="bg-white rounded-2xl shadow-xl p-8 max-w-3xl mx-auto border-2 border-olive-300">
+                <h2 class="text-2xl font-bold mb-6 text-olive-700 text-center" lang="en">Add New Cadet</h2>
+                <h2 class="text-2xl font-bold mb-6 text-olive-700 text-center hidden" lang="np">नयाँ क्याडेट थप्नुहोस्
+                </h2>
+                <form id="cadetForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Full Name -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Full Name</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">पुरा नाम</label>
+                        <input type="text" name="name" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- Name in Nepali -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Name in Nepali</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">नेपालीमा नाम</label>
+                        <input type="text" name="name_np" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- Rank -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Rank</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">पद</label>
+                        <select name="rank" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                            <option value="Cadet">Cadet</option>
+                            <option value="Lance Corporal">Lance Corporal</option>
+                            <option value="Corporal">Corporal</option>
+                            <option value="Sergeant">Sergeant</option>
+                            <option value="Staff Sergeant">Staff Sergeant</option>
+                            <option value="PJUO">PJUO</option>
+                            <option value="CJUO">CJUO</option>
+                            <option value="SUO">SUO</option>
+                        </select>
+                    </div>
+                    <!-- Contact -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Contact</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">सम्पर्क</label>
+                        <input type="text" name="contact" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- Address -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Address</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">ठेगाना</label>
+                        <input type="text" name="address" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Email</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">इमेल</label>
+                        <input type="email" name="email" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- Gender -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Gender</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">लिङ्ग</label>
+                        <select name="gender" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                            <option value="Male" lang="en">Male</option>
+                            <option value="Male" lang="np" class="hidden">पुरुष</option>
+                            <option value="Female" lang="en">Female</option>
+                            <option value="Female" lang="np" class="hidden">महिला</option>
+                            <option value="Other" lang="en">Other</option>
+                            <option value="Other" lang="np" class="hidden">अन्य</option>
+                        </select>
+                    </div>
+                    <!-- School Name -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">School Name</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">विद्यालयको नाम</label>
+                        <input type="text" name="school" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- NCC Batch -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">NCC Batch</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">NCC ब्याच</label>
+                        <input type="text" name="batch" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- Passout Year -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Passout Year</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">पासआउट वर्ष</label>
+                        <input type="number" name="passout_year" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- Guardian Name -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Guardian Name</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">अभिभावकको नाम</label>
+                        <input type="text" name="guardian_name" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- Guardian Contact -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Guardian Contact</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">अभिभावक सम्पर्क</label>
+                        <input type="text" name="guardian_contact" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- Relation -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">Relation</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">सम्बन्ध</label>
+                        <input type="text" name="relation" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                    </div>
+                    <!-- District -->
+                    <div>
+                        <label class="block text-olive-700 mb-2 font-semibold" lang="en">District</label>
+                        <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">जिल्ला</label>
+                        <select name="district" required
+                            class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                            <option value="Palpa" lang="en">Palpa</option>
+                            <option value="Palpa" lang="np" class="hidden">पाल्पा</option>
+                            <option value="Rupandehi" lang="en">Rupandehi</option>
+                            <option value="Rupandehi" lang="np" class="hidden">रुपन्देही</option>
+                            <option value="Arghakhanchi" lang="en">Arghakhanchi</option>
+                            <option value="Arghakhanchi" lang="np" class="hidden">अर्घाखाँची</option>
+                            <option value="Kapilvastu" lang="en">Kapilvastu</option>
+                            <option value="Kapilvastu" lang="np" class="hidden">कपिलवस्तु</option>
+                            <option value="Nawalparasi West" lang="en">Nawalparasi (West)</option>
+                            <option value="Nawalparasi West" lang="np" class="hidden">नवलपरासी (पश्चिम)</option>
+                            <option value="Gulmi" lang="en">Gulmi</option>
+                            <option value="Gulmi" lang="np" class="hidden">गुल्मी</option>
+                            <option value="Dang" lang="en">Dang</option>
+                            <option value="Dang" lang="np" class="hidden">दाङ</option>
+                            <option value="Pyuthan" lang="en">Pyuthan</option>
+                            <option value="Pyuthan" lang="np" class="hidden">प्यूठान</option>
+                            <option value="Rolpa" lang="en">Rolpa</option>
+                            <option value="Rolpa" lang="np" class="hidden">रोल्पा</option>
+                            <option value="Nawalparasi East" lang="en">Nawalparasi (East)</option>
+                            <option value="Nawalparasi East" lang="np" class="hidden">नवलपरासी (पूर्व)</option>
+                            <option value="Banke" lang="en">Banke</option>
+                            <option value="Banke" lang="np" class="hidden">बाँके</option>
+                            <option value="Bardiya" lang="en">Bardiya</option>
+                            <option value="Bardiya" lang="np" class="hidden">बर्दिया</option>
+                        </select>
+                    </div>
+                    <!-- Timestamp (hidden, auto-filled) -->
+                    <input type="hidden" name="timestamp" id="timestamp">
+                    <div class="md:col-span-2 mt-6 flex justify-center">
+                        <button type="submit"
+                            class="bg-olive-700 hover:bg-olive-800 text-white px-8 py-3 rounded-xl font-bold shadow-lg transition">
+                            <span lang="en">Register Cadet</span>
+                            <span lang="np" class="hidden">क्याडेट दर्ता गर्नुहोस्</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- View Cadets -->
+        <div id="viewCadets" class="container mx-auto p-8 hidden">
+            <div class="bg-white rounded-2xl shadow-xl p-8 max-w-5xl mx-auto border-2 border-olive-300">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-olive-700 text-center" lang="en">Cadet List</h2>
+                    <h2 class="text-2xl font-bold text-olive-700 text-center hidden" lang="np">क्याडेट सूची</h2>
+                    <button onclick="showScreen('dashboard')"
+                        class="bg-olive-700 hover:bg-olive-800 text-white px-4 py-2 rounded-lg font-semibold shadow transition">
+                        ← <span lang="en">Back</span><span lang="np" class="hidden">फिर्ता</span>
+                    </button>
+                </div>
+                <div class="mb-4">
+                    <input type="text" id="searchInput" placeholder="Search cadets..."
+                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500"
+                        oninput="searchCadets()">
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-olive-200 rounded-lg shadow">
+                        <thead>
+                            <tr class="bg-olive-100 text-olive-700">
+                                <th class="py-3 px-4 text-left">Name</th>
+                                <th class="py-3 px-4 text-left">Rank</th>
+                                <th class="py-3 px-4 text-left">Contact</th>
+                                <th class="py-3 px-4 text-left">Email</th>
+                                <th class="py-3 px-4 text-left">Gender</th>
+                                <th class="py-3 px-4 text-left">School</th>
+                                <th class="py-3 px-4 text-left">Batch</th>
+                                <th class="py-3 px-4 text-left">Year</th>
+                                <th class="py-3 px-4 text-left">District</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cadetTableBody">
+                            <!-- Dynamic rows go here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="fixed inset-0 bg-olive-900 bg-opacity-40 flex items-center justify-center hidden z-50">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-olive-400 h-16 w-16"></div>
+    </div>
+
+    <script>
+        // Configuration
+        const APP_URL = 'YOUR_APPS_SCRIPT_URL';
+        const ALLOWED_EMAIL = 'nccaalumbini@gmail.com';
+        let currentUser = null;
+
+        // Language switching
+        function switchLanguage(lang) {
+            document.querySelectorAll('[lang]').forEach(el => {
+                el.classList.toggle('hidden', el.lang !== lang);
+            });
+        }
+
+        // Navigation functions
+        function showScreen(screenId) {
+            document.querySelectorAll('#app > div').forEach(el => {
+                el.classList.toggle('hidden', el.id !== screenId);
+            });
+        }
+
+        // Loader
+        function showLoader() {
+            document.getElementById('loader').classList.remove('hidden');
+        }
+        function hideLoader() {
+            document.getElementById('loader').classList.add('hidden');
+        }
+
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('nccaa_user');
+            google.accounts.id.disableAutoSelect();
+            location.reload();
+        }
+
+        // Search Cadets
+        function searchCadets() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('#cadetTableBody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(query) ? '' : 'none';
+            });
+        }
+
+        // Google Sign-In
+        function handleLogin(response) {
+            showLoader();
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            if (payload.email === ALLOWED_EMAIL) {
+                currentUser = payload;
+                sessionStorage.setItem('nccaa_user', JSON.stringify(payload));
+                showApp();
+                loadDashboardStats();
+            } else {
+                alert('Access restricted to NCCAA administrators only');
+                google.accounts.id.disableAutoSelect();
+            }
+            hideLoader();
+        }
+
+        // Form submission
+        document.getElementById('cadetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoader();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            try {
+                const response = await fetch(APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Cadet registered successfully!');
+                    e.target.reset();
+                    loadDashboardStats();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Registration failed. Please try again.');
+            }
+            hideLoader();
+        });
+
+        // Dashboard stats
+        async function loadDashboardStats() {
+            showLoader();
+            try {
+                const response = await fetch(`${APP_URL}?action=stats`);
+                const stats = await response.json();
+                document.getElementById('totalCadets').textContent = stats.total;
+                document.getElementById('maleCadets').textContent = stats.male;
+                document.getElementById('femaleCadets').textContent = stats.female;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+            hideLoader();
+        }
+
+        // Initialize app
+        function showApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            switchLanguage('en'); // Default language
+        }
+
+        // Check session on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = sessionStorage.getItem('nccaa_user');
+            if (savedUser && JSON.parse(savedUser).email === ALLOWED_EMAIL) {
+                currentUser = JSON.parse(savedUser);
+                showApp();
+                loadDashboardStats();
+            }
+        });
+
+        // Auto logout when tab closes
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.removeItem('nccaa_user');
+        });
+    </script>
+</body>
+
+</html>
