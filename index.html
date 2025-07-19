@@ -6,6 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NCCAA Lumbini Cadet System</title>
     <script src="https://accounts.google.com/gsi/client"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        olive: {
+                            50: '#f6f6e9',
+                            100: '#eaeac7',
+                            200: '#d5d5a1',
+                            300: '#bdbd7a',
+                            400: '#a3a35a',
+                            500: '#808000',
+                            600: '#6e6e00',
+                            700: '#5c5c00',
+                            800: '#4a4a00',
+                            900: '#383800',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .loader {
@@ -27,23 +49,23 @@
 
 <body class="bg-gradient-to-br from-olive-50 to-olive-200 min-h-screen font-sans">
     <!-- Sidebar -->
-    <aside class="fixed top-0 left-0 h-full w-64 bg-olive-700 text-white flex flex-col z-50 shadow-xl">
+    <aside class="fixed top-0 left-0 h-full w-64 bg-olive-700 text-olive-50 flex flex-col z-50 shadow-xl">
         <div class="flex items-center justify-between px-6 py-4 border-b border-olive-600">
             <img src="https://via.placeholder.com/40/808000/FFFFFF?text=NCC" alt="NCC Logo"
                 class="rounded-full border-2 border-white">
-            <span class="text-xl font-bold ml-2">NCCAA</span>
+            <span class="text-xl font-bold ml-2 text-olive-50">NCCAA</span>
         </div>
         <nav class="flex-1 px-6 py-4 space-y-2">
             <button onclick="showScreen('dashboard')"
-                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-olive-600 transition font-semibold">
+                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg bg-olive-600 hover:bg-olive-800 transition font-semibold text-olive-50">
                 <span>🏠</span> <span lang="en">Dashboard</span><span lang="np" class="hidden">ड्यासबोर्ड</span>
             </button>
             <button onclick="showScreen('addCadet')"
-                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-olive-600 transition font-semibold">
+                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg bg-olive-600 hover:bg-olive-800 transition font-semibold text-olive-50">
                 <span>➕</span> <span lang="en">Add Cadet</span><span lang="np" class="hidden">क्याडेट थप्नुहोस्</span>
             </button>
             <button onclick="showScreen('viewCadets')"
-                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-olive-600 transition font-semibold">
+                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg bg-olive-600 hover:bg-olive-800 transition font-semibold text-olive-50">
                 <span>👥</span> <span lang="en">View Cadets</span><span lang="np" class="hidden">क्याडेट सूची</span>
             </button>
         </nav>
@@ -63,7 +85,7 @@
     </aside>
 
     <!-- Main Content -->
-    <div class="ml-64 min-h-screen">
+    <div id="app" class="ml-64 min-h-screen">
         <!-- Dashboard -->
         <div id="dashboard" class="container mx-auto p-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
