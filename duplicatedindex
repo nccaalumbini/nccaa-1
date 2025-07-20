@@ -730,49 +730,6 @@
         <div class="loader ease-linear rounded-full border-4 border-t-4 border-olive-400 h-16 w-16"></div>
     </div>
 
-    <!-- Military-style Cadet View Modal -->
-    <div id="cadetModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[9999] hidden">
-        <div class="bg-white rounded-2xl shadow-elevated border-4 border-olive-700 max-w-xl w-full relative p-8">
-            <button id="closeCadetModal"
-                class="absolute top-4 right-4 text-olive-700 hover:text-red-600 text-xl font-bold">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="flex items-center gap-6 mb-6">
-                <div class="bg-olive-200 rounded-full border-4 border-olive-700 p-4 flex items-center justify-center">
-                    <i class="fas fa-user-shield text-olive-700 text-5xl"></i>
-                </div>
-                <div>
-                    <h2 id="cadetModalName" class="text-2xl font-extrabold text-olive-800 mb-1 tracking-tight"></h2>
-                    <span id="cadetModalRank"
-                        class="inline-block bg-olive-700 text-black-700 font-bold px-4 py-1 rounded-full text-sm shadow border border-olive-900">
-                        <!-- Rank will be injected here -->
-                    </span>
-                    <span id="cadetModalDistrict"
-                        class="inline-block bg-olive-100 text-olive-700 px-3 py-1 rounded-full font-semibold text-sm ml-2 shadow border border-olive-300">District</span>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-olive-700 font-medium">
-                <div><strong>Contact:</strong> <span id="cadetModalContact"></span></div>
-                <div><strong>Gender:</strong> <span id="cadetModalGender"></span></div>
-                <div><strong>School:</strong> <span id="cadetModalSchool"></span></div>
-                <div><strong>Batch:</strong> <span id="cadetModalBatch"></span></div>
-                <div><strong>Passout Year:</strong> <span id="cadetModalPassout"></span></div>
-                <div><strong>Email:</strong> <span id="cadetModalEmail"></span></div>
-                <div><strong>Address:</strong> <span id="cadetModalAddress"></span></div>
-            </div>
-            <div class="mt-6 border-t pt-4">
-                <h3 class="text-lg font-bold text-olive-800 mb-2 flex items-center gap-2">
-                    <i class="fas fa-user-shield"></i> Guardian Details
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-olive-700 font-medium">
-                    <div><strong>Name:</strong> <span id="cadetModalGuardianName"></span></div>
-                    <div><strong>Contact:</strong> <span id="cadetModalGuardianContact"></span></div>
-                    <div><strong>Relation:</strong> <span id="cadetModalRelation"></span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Configuration
         const APP_URL = 'https://script.google.com/macros/s/AKfycbztadf6SD9XtxcHgH9PNFtRrCLzy0KTG2-82BGOHWOhAsDzD2dSdLzyYpYU7DSkiTjC/exec';
@@ -994,37 +951,32 @@
             window.cadetList = cadets; // Store for later use
         }
 
-        function showModal(cadet) {
-            // Fill modal fields
-            document.getElementById('cadetModalName').textContent = cadet.Name || '';
-            document.getElementById('cadetModalRank').textContent = cadet.Rank || '';
-            document.getElementById('cadetModalDistrict').textContent = cadet.District || '';
-            document.getElementById('cadetModalContact').textContent = cadet.Contact || '';
-            document.getElementById('cadetModalGender').textContent = cadet.Gender || '';
-            document.getElementById('cadetModalSchool').textContent = cadet['School Name'] || '';
-            document.getElementById('cadetModalBatch').textContent = cadet['NCC Batch'] || '';
-            document.getElementById('cadetModalPassout').textContent = cadet['Passout Year'] || '';
-            document.getElementById('cadetModalEmail').textContent = cadet.Email || '';
-            document.getElementById('cadetModalAddress').textContent = cadet.Address || '';
-            document.getElementById('cadetModalGuardianName').textContent = cadet['Guardian Name'] || '';
-            document.getElementById('cadetModalGuardianContact').textContent = cadet['Guardian Contact'] || '';
-            document.getElementById('cadetModalRelation').textContent = cadet.Relation || '';
-            document.getElementById('cadetModal').classList.remove('hidden');
-        }
-
-        // Close modal logic
-        document.getElementById('closeCadetModal').addEventListener('click', () => {
-            document.getElementById('cadetModal').classList.add('hidden');
-        });
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') document.getElementById('cadetModal').classList.add('hidden');
-        });
-
-        // Update viewCadet to use showModal
         function viewCadet(cadetId) {
             const cadet = window.cadetList.find(c => `${c.Timestamp}_${c.District}` === cadetId);
             if (!cadet) return;
-            showModal(cadet);
+            // Show modal or navigate to a detail view screen
+            // Example: populate a modal with all cadet details
+            let html = `
+        <div class="p-6">
+            <h2 class="text-2xl font-bold mb-4">${cadet.Name}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><strong>Rank:</strong> ${cadet.Rank}</div>
+                <div><strong>Contact:</strong> ${cadet.Contact}</div>
+                <div><strong>Gender:</strong> ${cadet.Gender}</div>
+                <div><strong>School:</strong> ${cadet['School Name']}</div>
+                <div><strong>Batch:</strong> ${cadet['NCC Batch']}</div>
+                <div><strong>Passout Year:</strong> ${cadet['Passout Year']}</div>
+                <div><strong>District:</strong> ${cadet.District}</div>
+                <div><strong>Guardian Name:</strong> ${cadet['Guardian Name']}</div>
+                <div><strong>Guardian Contact:</strong> ${cadet['Guardian Contact']}</div>
+                <div><strong>Relation:</strong> ${cadet.Relation}</div>
+                <div><strong>Address:</strong> ${cadet.Address}</div>
+                <div><strong>Email:</strong> ${cadet.Email}</div>
+            </div>
+        </div>
+    `;
+            // Show in a modal (implement your modal logic)
+            showModal(html);
         }
 
         // Initialize app
