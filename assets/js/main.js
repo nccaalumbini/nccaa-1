@@ -3,7 +3,7 @@ const APP_URL = 'https://script.google.com/macros/s/AKfycbyU7ZcmN2avRhL6t8aTwSo8
 const ALLOWED_EMAILS = [
     'nccaalumbini@gmail.com',
     'dipaadhikary102@gmail.com',
-    'someoneelse@example.com'
+    'deepaadhikary102@gmail.com'
 ];
 let currentUser = null;
 let isSidebarCollapsed = false;
