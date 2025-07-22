@@ -4,6 +4,7 @@ const ALLOWED_EMAILS = [
     'nccaalumbini@gmail.com',
     'dipaadhikary102@gmail.com',
     'kcpooja60@gmail.com',
+    'deepaadhikary102@gmail.com',
     'manishanepali155@gmail.com'
 ];
 let currentUser = null;
