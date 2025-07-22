@@ -7,32 +7,6 @@
     <title>NCCAA Lumbini Cadet System</title>
     <script src="https://accounts.google.com/gsi/client"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        olive: {
-                            50: '#f6f6e9',
-                            100: '#eaeac7',
-                            200: '#d5d5a1',
-                            300: '#bdbd7a',
-                            400: '#a3a35a',
-                            500: '#808000',
-                            600: '#6e6e00',
-                            700: '#5c5c00',
-                            800: '#4a4a00',
-                            900: '#383800',
-                        },
-                    },
-                    boxShadow: {
-                        'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
-                        'elevated': '0 8px 30px rgba(0, 0, 0, 0.12)',
-                    }
-                },
-            },
-        }
-    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .loader {
@@ -117,21 +91,49 @@
 
         @media (max-width: 768px) {
             #sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100vh;
+                width: 80vw;
+                max-width: 320px;
+                z-index: 10000;
+                background: #5c5c00;
+                box-shadow: 2px 0 16px rgba(0, 0, 0, 0.15);
                 transform: translateX(-100%);
-                transition: transform 0.3s ease;
+                transition: transform 0.3s cubic-bezier(.4, 0, .2, 1);
             }
 
             #sidebar.open {
                 transform: translateX(0);
             }
 
+            #sidebarOverlay {
+                display: block;
+            }
+
             #app {
                 margin-left: 0 !important;
             }
 
-            #mobileMenuBtn {
-                display: block;
+            body.sidebar-open {
+                overflow: hidden;
             }
+        }
+
+        #sidebarOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 9999;
+        }
+
+        #mobileMenuBtn {
+            background: #5c5c00 !important;
+            color: #fff !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border: none;
         }
 
         .sidebar-collapsed .lang-text,
@@ -158,7 +160,7 @@
         <div
             class="bg-white/95 p-10 rounded-2xl shadow-xl w-full max-w-md flex flex-col items-center border border-olive-300">
             <div class="bg-olive-100 p-4 rounded-full mb-6 shadow-inner">
-                <img src="images/1.png" alt="NCC Logo" class="rounded-full border-4 border-olive-600">
+                <img src="assets/images/1.png" alt="NCC Logo" class="rounded-full border-4 border-olive-600">
             </div>
             <h1 class="text-3xl font-bold text-olive-800 mb-2 tracking-tight text-center">NCCAA Lumbini Cadet System
             </h1>
@@ -188,7 +190,7 @@
         <aside id="sidebar"
             class="fixed top-0 left-0 h-full w-64 bg-olive-700 text-olive-50 flex flex-col z-50 shadow-xl transition-all duration-300">
             <div class="flex flex-col items-center py-6 border-b border-olive-600">
-                <img src="images/1.png" alt="NCC Logo" class="w-16 h-16 rounded-full border-2 border-white mb-2">
+                <img src="assets/images/1.png" alt="NCC Logo" class="w-16 h-16 rounded-full border-2 border-white mb-2">
                 <span class="text-lg font-bold text-olive-50 mb-2">NCCAA</span>
                 <button id="sidebarToggle" class="text-olive-200 hover:text-white mt-2">
                     <i class="fas fa-chevron-left"></i>
@@ -249,97 +251,101 @@
         </aside>
 
         <!-- Main Content -->
-        <div id="app" class="ml-64 min-h-screen">
+        <div id="app" class="ml-0 md:ml-64 min-h-screen">
             <!-- Top Bar -->
-            <div class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
+            <div class="bg-white shadow-sm py-4 px-6 flex justify-between items-center mt-14 md:mt-0">
                 <div>
                     <h2 id="screenTitle" class="text-xl font-bold text-olive-800">Dashboard</h2>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="flex items-center gap-3 bg-olive-50 rounded-full py-2 px-4">
-                        <img src="images/1.png" alt="User Avatar"
+                        <img src="assets/images/1.png" alt="User Avatar"
                             class="w-8 h-8 rounded-full border-2 border-olive-300">
                         <span class="font-medium text-olive-800" id="userName">Admin User</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Dashboard -->
-            <div id="dashboard" class="container mx-auto p-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div
-                        class="stat-card bg-white rounded-xl shadow-soft p-6 flex flex-col items-center border border-olive-200">
-                        <div class="bg-olive-100 p-3 rounded-full mb-4">
-                            <i class="fas fa-users text-olive-700 text-xl"></i>
+            <!-- Dashboard, Add Cadet, View Cadets, etc. -->
+            <div id="dashboard" class="container mx-auto p-2 md:p-6 mt-14 md:mt-0">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-8">
+                    <div class="stat-card bg-white rounded-xl shadow-soft p-4 md:p-6 flex flex-col items-center border border-olive-200">
+                        <div class="bg-olive-100 p-2 md:p-3 rounded-full mb-2 md:mb-4">
+                            <i class="fas fa-users text-olive-700 text-lg md:text-xl"></i>
                         </div>
-                        <h3 class="text-olive-600 mb-2 font-semibold" lang="en">Total Cadets</h3>
-                        <h3 class="text-olive-600 mb-2 hidden font-semibold" lang="np">कुल क्याडेट</h3>
-                        <p id="totalCadets" class="text-4xl font-extrabold text-olive-700">0</p>
+                        <h3 class="text-olive-600 mb-1 md:mb-2 font-semibold text-base md:text-lg" lang="en">Total Cadets
+                        </h3>
+                        <h3 class="text-olive-600 mb-1 md:mb-2 hidden font-semibold text-base md:text-lg" lang="np">कुल
+                            क्याडेट</h3>
+                        <p id="totalCadets" class="text-2xl md:text-4xl font-extrabold text-olive-700">0</p>
                     </div>
-                    <div
-                        class="stat-card bg-white rounded-xl shadow-soft p-6 flex flex-col items-center border border-blue-100">
-                        <div class="bg-blue-100 p-3 rounded-full mb-4">
-                            <i class="fas fa-male text-blue-700 text-xl"></i>
+                    <div class="stat-card bg-white rounded-xl shadow-soft p-4 md:p-6 flex flex-col items-center border border-blue-100">
+                        <div class="bg-blue-100 p-2 md:p-3 rounded-full mb-2 md:mb-4">
+                            <i class="fas fa-male text-blue-700 text-lg md:text-xl"></i>
                         </div>
-                        <h3 class="text-blue-600 mb-2 font-semibold" lang="en">Male Cadets</h3>
-                        <h3 class="text-blue-600 mb-2 hidden font-semibold" lang="np">पुरुष क्याडेट</h3>
-                        <p id="maleCadets" class="text-4xl font-extrabold text-blue-700">0</p>
+                        <h3 class="text-blue-600 mb-1 md:mb-2 font-semibold text-base md:text-lg" lang="en">Male Cadets
+                        </h3>
+                        <h3 class="text-blue-600 mb-1 md:mb-2 hidden font-semibold text-base md:text-lg" lang="np">पुरुष
+                            क्याडेट</h3>
+                        <p id="maleCadets" class="text-2xl md:text-4xl font-extrabold text-blue-700">0</p>
                     </div>
-                    <div
-                        class="stat-card bg-white rounded-xl shadow-soft p-6 flex flex-col items-center border border-pink-100">
-                        <div class="bg-pink-100 p-3 rounded-full mb-4">
-                            <i class="fas fa-female text-pink-700 text-xl"></i>
+                    <div class="stat-card bg-white rounded-xl shadow-soft p-4 md:p-6 flex flex-col items-center border border-pink-100">
+                        <div class="bg-pink-100 p-2 md:p-3 rounded-full mb-2 md:mb-4">
+                            <i class="fas fa-female text-pink-700 text-lg md:text-xl"></i>
                         </div>
-                        <h3 class="text-pink-600 mb-2 font-semibold" lang="en">Female Cadets</h3>
-                        <h3 class="text-pink-600 mb-2 hidden font-semibold" lang="np">महिला क्याडेट</h3>
-                        <p id="femaleCadets" class="text-4xl font-extrabold text-pink-700">0</p>
+                        <h3 class="text-pink-600 mb-1 md:mb-2 font-semibold text-base md:text-lg" lang="en">Female Cadets
+                        </h3>
+                        <h3 class="text-pink-600 mb-1 md:mb-2 hidden font-semibold text-base md:text-lg" lang="np">महिला
+                            क्याडेट</h3>
+                        <p id="femaleCadets" class="text-2xl md:text-4xl font-extrabold text-pink-700">0</p>
                     </div>
                 </div>
 
                 <!-- Recent Activity -->
-                <div class="bg-white rounded-2xl shadow-soft p-6 mb-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-bold text-olive-800" lang="en">Recent Activity</h3>
-                        <h3 class="text-xl font-bold text-olive-800 hidden" lang="np">हालको गतिविधि</h3>
-                        <button class="text-olive-600 hover:text-olive-800">
+                <div class="bg-white rounded-2xl shadow-soft p-4 md:p-6 mb-4 md:mb-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6 gap-2">
+                        <h3 class="text-lg md:text-xl font-bold text-olive-800" lang="en">Recent Activity</h3>
+                        <h3 class="text-lg md:text-xl font-bold text-olive-800 hidden" lang="np">हालको गतिविधि</h3>
+                        <button class="text-olive-600 hover:text-olive-800 self-end sm:self-auto">
                             <i class="fas fa-ellipsis-h"></i>
                         </button>
                     </div>
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-3 pb-4 border-b border-olive-100">
-                            <div class="bg-green-100 p-2 rounded-full mt-1">
+                    <div class="space-y-3 md:space-y-4">
+                        <!-- Example activity items, repeat as needed -->
+                        <div class="flex items-start gap-2 md:gap-3 pb-3 md:pb-4 border-b border-olive-100">
+                            <div class="bg-green-100 p-1 md:p-2 rounded-full mt-1">
                                 <i class="fas fa-user-plus text-green-600"></i>
                             </div>
                             <div>
-                                <p class="font-medium text-olive-800" lang="en">New cadet registered: <span
+                                <p class="font-medium text-olive-800 text-sm md:text-base" lang="en">New cadet registered: <span
                                         class="font-semibold">John Doe</span></p>
-                                <p class="font-medium text-olive-800 hidden" lang="np">नयाँ क्याडेट दर्ता: <span
+                                <p class="font-medium text-olive-800 text-sm md:text-base hidden" lang="np">नयाँ क्याडेट दर्ता: <span
                                         class="font-semibold">John Doe</span></p>
-                                <p class="text-sm text-olive-500">2 hours ago</p>
+                                <p class="text-xs md:text-sm text-olive-500">2 hours ago</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3 pb-4 border-b border-olive-100">
-                            <div class="bg-blue-100 p-2 rounded-full mt-1">
+                        <div class="flex items-start gap-2 md:gap-3 pb-3 md:pb-4 border-b border-olive-100">
+                            <div class="bg-blue-100 p-1 md:p-2 rounded-full mt-1">
                                 <i class="fas fa-edit text-blue-600"></i>
                             </div>
                             <div>
-                                <p class="font-medium text-olive-800" lang="en">Cadet information updated: <span
+                                <p class="font-medium text-olive-800 text-sm md:text-base" lang="en">Cadet information updated: <span
                                         class="font-semibold">Jane Smith</span></p>
-                                <p class="font-medium text-olive-800 hidden" lang="np">क्याडेट जानकारी अपडेट: <span
+                                <p class="font-medium text-olive-800 text-sm md:text-base hidden" lang="np">क्याडेट जानकारी अपडेट: <span
                                         class="font-semibold">Jane Smith</span></p>
-                                <p class="text-sm text-olive-500">Yesterday</p>
+                                <p class="text-xs md:text-sm text-olive-500">Yesterday</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3">
-                            <div class="bg-purple-100 p-2 rounded-full mt-1">
+                        <div class="flex items-start gap-2 md:gap-3">
+                            <div class="bg-purple-100 p-1 md:p-2 rounded-full mt-1">
                                 <i class="fas fa-file-pdf text-purple-600"></i>
                             </div>
                             <div>
-                                <p class="font-medium text-olive-800" lang="en">Report generated: Monthly Cadet Summary
+                                <p class="font-medium text-olive-800 text-sm md:text-base" lang="en">Report generated: Monthly Cadet Summary
                                 </p>
-                                <p class="font-medium text-olive-800 hidden" lang="np">रिपोर्ट जनरेट: मासिक क्याडेट
+                                <p class="font-medium text-olive-800 text-sm md:text-base hidden" lang="np">रिपोर्ट जनरेट: मासिक क्याडेट
                                     सारांश</p>
-                                <p class="text-sm text-olive-500">2 days ago</p>
+                                <p class="text-xs md:text-sm text-olive-500">2 days ago</p>
                             </div>
                         </div>
                     </div>
@@ -406,55 +412,59 @@
             </div>
 
             <!-- Add Cadet Form -->
-            <div id="addCadet" class="container mx-auto p-6 hidden">
-                <div class="bg-white rounded-2xl shadow-elevated p-8 max-w-4xl mx-auto border border-olive-200">
-                    <div class="flex justify-between items-start mb-8">
+            <div id="addCadet" class="container mx-auto p-2 md:p-6 hidden mt-14 md:mt-0">
+                <div class="bg-white rounded-2xl shadow-elevated p-2 md:p-8 max-w-4xl mx-auto border border-olive-200">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-8 gap-2">
                         <div>
-                            <h2 class="text-2xl font-bold text-olive-800" lang="en">Add New Cadet</h2>
-                            <h2 class="text-2xl font-bold text-olive-800 hidden" lang="np">नयाँ क्याडेट थप्नुहोस्</h2>
-                            <p class="text-olive-600" lang="en">Fill in all required fields to register a new cadet</p>
-                            <p class="text-olive-600 hidden" lang="np">नयाँ क्याडेट दर्ता गर्न सबै आवश्यक फिल्डहरू
+                            <h2 class="text-xl md:text-2xl font-bold text-olive-800" lang="en">Add New Cadet</h2>
+                            <h2 class="text-xl md:text-2xl font-bold text-olive-800 hidden" lang="np">नयाँ क्याडेट थप्नुहोस्</h2>
+                            <p class="text-olive-600 text-sm md:text-base" lang="en">Fill in all required fields to register a new cadet
+                            </p>
+                            <p class="text-olive-600 text-sm md:text-base hidden" lang="np">नयाँ क्याडेट दर्ता गर्न सबै आवश्यक फिल्डहरू
                                 भर्नुहोस्</p>
                         </div>
                         <button onclick="showScreen('dashboard')"
-                            class="btn-secondary text-white px-4 py-2 rounded-lg font-semibold shadow transition flex items-center gap-2">
+                            class="btn-secondary text-white px-3 md:px-4 py-2 rounded-lg font-semibold shadow transition flex items-center gap-2 mt-2 md:mt-0">
                             <i class="fas fa-arrow-left"></i>
-                            <span lang="en">Back to Dashboard</span>
-                            <span lang="np" class="hidden">ड्यासबोर्डमा फिर्ता जानुहोस्</span>
+                            <span lang="en">Back</span>
+                            <span lang="np" class="hidden">फिर्ता</span>
                         </button>
                     </div>
-                    <form id="cadetForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <form id="cadetForm" class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                         <!-- Personal Details Card -->
-                        <div class="md:col-span-2 bg-olive-50 rounded-xl p-6">
-                            <h3 class="text-lg font-bold text-olive-800 mb-4 flex items-center gap-2">
+                        <div class="bg-olive-50 rounded-xl p-3 md:p-6 md:col-span-2">
+                            <h3 class="text-base md:text-lg font-bold text-olive-800 mb-2 md:mb-4 flex items-center gap-2">
                                 <i class="fas fa-user-circle"></i>
                                 <span lang="en">Personal Details</span>
                                 <span lang="np" class="hidden">व्यक्तिगत विवरण</span>
                             </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                                 <!-- Full Name -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Full Name</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">पुरा
-                                        नाम</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Full Name</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
+                                        lang="np">पुरा नाम</label>
                                     <input type="text" name="name" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                                 <!-- Name in Nepali -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Name in
-                                        Nepali</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">नेपालीमा
-                                        नाम</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Name in Nepali</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
+                                        lang="np">नेपालीमा नाम</label>
                                     <input type="text" name="name_np" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                                 <!-- Rank -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Rank</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">पद</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Rank</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
+                                        lang="np">पद</label>
                                     <select name="rank" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                         <option value="Cadet">Cadet</option>
                                         <option value="Lance Corporal">Lance Corporal</option>
                                         <option value="Corporal">Corporal</option>
@@ -467,34 +477,39 @@
                                 </div>
                                 <!-- Contact -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Contact</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold"
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Contact</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
                                         lang="np">सम्पर्क</label>
                                     <input type="text" name="contact" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                                 <!-- Address -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Address</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold"
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Address</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
                                         lang="np">ठेगाना</label>
                                     <input type="text" name="address" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                                 <!-- Email -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Email</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">इमेल</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Email</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
+                                        lang="np">इमेल</label>
                                     <input type="email" name="email" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                                 <!-- Gender -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Gender</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold"
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Gender</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
                                         lang="np">लिङ्ग</label>
                                     <select name="gender" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                         <option value="Male" lang="en">Male</option>
                                         <option value="Male" lang="np" class="hidden">पुरुष</option>
                                         <option value="Female" lang="en">Female</option>
@@ -507,45 +522,48 @@
                         </div>
 
                         <!-- Education Details Card -->
-                        <div class="md:col-span-2 bg-olive-50 rounded-xl p-6">
-                            <h3 class="text-lg font-bold text-olive-800 mb-4 flex items-center gap-2">
+                        <div class="bg-olive-50 rounded-xl p-3 md:p-6 md:col-span-2">
+                            <h3 class="text-base md:text-lg font-bold text-olive-800 mb-2 md:mb-4 flex items-center gap-2">
                                 <i class="fas fa-graduation-cap"></i>
                                 <span lang="en">Education Details</span>
                                 <span lang="np" class="hidden">शैक्षिक विवरण</span>
                             </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                                 <!-- School Name -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">School Name</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">विद्यालयको
-                                        नाम</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">School Name</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
+                                        lang="np">विद्यालयको नाम</label>
                                     <input type="text" name="school" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                                 <!-- NCC Batch -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">NCC Batch</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">NCC
-                                        ब्याच</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">NCC Batch</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
+                                        lang="np">NCC ब्याच</label>
                                     <input type="text" name="batch" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                                 <!-- Passout Year -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Passout
-                                        Year</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">पासआउट
-                                        वर्ष</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Passout Year</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
+                                        lang="np">पासआउट वर्ष</label>
                                     <input type="number" name="passout_year" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                                 <!-- District -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">District</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold"
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">District</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
                                         lang="np">जिल्ला</label>
                                     <select name="district" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                         <option value="Palpa" lang="en">Palpa</option>
                                         <option value="Palpa" lang="np" class="hidden">पाल्पा</option>
                                         <option value="Rupandehi" lang="en">Rupandehi</option>
@@ -578,38 +596,39 @@
                         </div>
 
                         <!-- Guardian Details Card -->
-                        <div class="md:col-span-2 bg-olive-50 rounded-xl p-6">
-                            <h3 class="text-lg font-bold text-olive-800 mb-4 flex items-center gap-2">
+                        <div class="bg-olive-50 rounded-xl p-3 md:p-6 md:col-span-2">
+                            <h3 class="text-base md:text-lg font-bold text-olive-800 mb-2 md:mb-4 flex items-center gap-2">
                                 <i class="fas fa-user-friends"></i>
                                 <span lang="en">Guardian Details</span>
                                 <span lang="np" class="hidden">अभिभावक विवरण</span>
                             </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                                 <!-- Guardian Name -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Guardian
-                                        Name</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">अभिभावकको
-                                        नाम</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Guardian Name</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
+                                        lang="np">अभिभावकको नाम</label>
                                     <input type="text" name="guardian_name" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                                 <!-- Guardian Contact -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Guardian
-                                        Contact</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold" lang="np">अभिभावक
-                                        सम्पर्क</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Guardian Contact</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
+                                        lang="np">अभिभावक सम्पर्क</label>
                                     <input type="text" name="guardian_contact" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                                 <!-- Relation -->
                                 <div>
-                                    <label class="block text-olive-700 mb-2 font-semibold" lang="en">Relation</label>
-                                    <label class="block text-olive-700 mb-2 hidden font-semibold"
+                                    <label class="block text-olive-700 mb-1 md:mb-2 font-semibold text-sm md:text-base"
+                                        lang="en">Relation</label>
+                                    <label class="block text-olive-700 mb-1 md:mb-2 hidden font-semibold text-sm md:text-base"
                                         lang="np">सम्बन्ध</label>
                                     <input type="text" name="relation" required
-                                        class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                        class="w-full px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 </div>
                             </div>
                         </div>
@@ -629,47 +648,46 @@
             </div>
 
             <!-- View Cadets -->
-            <div id="viewCadets" class="container mx-auto p-6 hidden">
-                <div class="bg-white rounded-2xl shadow-elevated p-8 max-w-6xl mx-auto border border-olive-200">
-                    <div class="flex justify-between items-center mb-6">
+            <div id="viewCadets" class="container mx-auto p-2 md:p-6 hidden mt-14 md:mt-0">
+                <div class="bg-white rounded-2xl shadow-elevated p-2 md:p-8 max-w-6xl mx-auto border border-olive-200">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 gap-2">
                         <div>
-                            <h2 class="text-2xl font-bold text-olive-800" lang="en">Cadet List</h2>
-                            <h2 class="text-2xl font-bold text-olive-800 hidden" lang="np">क्याडेट सूची</h2>
-                            <p class="text-olive-600" lang="en">All registered cadets in the system</p>
-                            <p class="text-olive-600 hidden" lang="np">प्रणालीमा दर्ता भएका सबै क्याडेटहरू</p>
+                            <h2 class="text-xl md:text-2xl font-bold text-olive-800" lang="en">Cadet List</h2>
+                            <h2 class="text-xl md:text-2xl font-bold text-olive-800 hidden" lang="np">क्याडेट सूची</h2>
+                            <p class="text-olive-600 text-sm md:text-base" lang="en">All registered cadets in the system
+                            </p>
+                            <p class="text-olive-600 text-sm md:text-base hidden" lang="np">प्रणालीमा दर्ता भएका सबै क्याडेटहरू
+                            </p>
                         </div>
-                        <div class="flex gap-3">
+                        <div class="flex gap-2 md:gap-3 mt-2 md:mt-0">
                             <button onclick="showScreen('dashboard')"
-                                class="btn-secondary text-white px-4 py-2 rounded-lg font-semibold shadow transition flex items-center gap-2">
+                                class="btn-secondary text-white px-3 md:px-4 py-2 rounded-lg font-semibold shadow transition flex items-center gap-2">
                                 <i class="fas fa-arrow-left"></i>
                                 <span lang="en">Back</span>
                                 <span lang="np" class="hidden">फिर्ता</span>
                             </button>
                             <button
-                                class="btn-primary text-white px-4 py-2 rounded-lg font-semibold shadow transition flex items-center gap-2">
+                                class="btn-primary text-white px-3 md:px-4 py-2 rounded-lg font-semibold shadow transition flex items-center gap-2">
                                 <i class="fas fa-download"></i>
                                 <span lang="en">Export</span>
                                 <span lang="np" class="hidden">निर्यात गर्नुहोस्</span>
                             </button>
                         </div>
                     </div>
-
-                    <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
+                    <div class="flex flex-col md:flex-row justify-between gap-2 md:gap-4 mb-4 md:mb-6">
                         <div class="relative w-full md:w-64">
                             <input type="text" id="searchInput" placeholder="Search cadets..."
-                                class="w-full pl-10 pr-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                                class="w-full pl-9 pr-3 md:pl-10 md:pr-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                             <i class="fas fa-search absolute left-3 top-3 text-olive-500"></i>
                         </div>
-                        <div class="flex gap-3">
-                            <select
-                                class="px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                        <div class="flex gap-2 md:gap-3">
+                            <select class="px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 <option>All Districts</option>
                                 <option>Palpa</option>
                                 <option>Rupandehi</option>
                                 <option>Kapilvastu</option>
                             </select>
-                            <select
-                                class="px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500">
+                            <select class="px-3 md:px-4 py-2 border border-olive-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 text-sm md:text-base">
                                 <option>All Ranks</option>
                                 <option>Cadet</option>
                                 <option>Corporal</option>
@@ -678,44 +696,38 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="overflow-x-auto rounded-xl shadow-sm border border-olive-200">
-                        <table class="min-w-full bg-white">
+                        <table class="min-w-full bg-white text-sm md:text-base">
                             <thead>
                                 <tr class="bg-olive-100 text-olive-700">
-                                    <th class="py-4 px-6 text-left font-semibold">ID</th>
-                                    <th class="py-4 px-6 text-left font-semibold">Name</th>
-                                    <th class="py-4 px-6 text-left font-semibold">Rank</th>
-                                    <th class="py-4 px-6 text-left font-semibold">Contact</th>
-                                    <th class="py-4 px-6 text-left font-semibold">Gender</th>
-                                    <th class="py-4 px-6 text-left font-semibold">School</th>
-                                    <th class="py-4 px-6 text-left font-semibold">District</th>
-                                    <th class="py-4 px-6 text-left font-semibold">Actions</th>
+                                    <th class="py-2 md:py-4 px-2 md:px-6 text-left font-semibold">ID</th>
+                                    <th class="py-2 md:py-4 px-2 md:px-6 text-left font-semibold">Name</th>
+                                    <th class="py-2 md:py-4 px-2 md:px-6 text-left font-semibold">Rank</th>
+                                    <th class="py-2 md:py-4 px-2 md:px-6 text-left font-semibold">Contact</th>
+                                    <th class="py-2 md:py-4 px-2 md:px-6 text-left font-semibold">Gender</th>
+                                    <th class="py-2 md:py-4 px-2 md:px-6 text-left font-semibold">School</th>
+                                    <th class="py-2 md:py-4 px-2 md:px-6 text-left font-semibold">District</th>
+                                    <th class="py-2 md:py-4 px-2 md:px-6 text-left font-semibold">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="cadetTableBody" class="divide-y divide-olive-100">
-
+                                <!-- Table rows injected here -->
                             </tbody>
                         </table>
                     </div>
-
-                    <div class="flex justify-between items-center mt-6">
-                        <div class="text-olive-600">
+                    <div class="flex flex-col md:flex-row justify-between items-center mt-4 md:mt-6 gap-2">
+                        <div class="text-olive-600 text-xs md:text-base">
                             <span lang="en">Showing 1 to 3 of 15 entries</span>
                             <span lang="np" class="hidden">१ देखि ३ सम्म १५ प्रविष्टिहरू देखाइएको छ</span>
                         </div>
-                        <div class="flex gap-2">
-                            <button
-                                class="px-4 py-2 border border-olive-300 rounded-lg text-olive-700 hover:bg-olive-50">
+                        <div class="flex gap-1 md:gap-2">
+                            <button class="px-2 md:px-4 py-1 md:py-2 border border-olive-300 rounded-lg text-olive-700 hover:bg-olive-50">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
-                            <button class="px-4 py-2 bg-olive-700 text-white rounded-lg font-semibold">1</button>
-                            <button
-                                class="px-4 py-2 border border-olive-300 rounded-lg text-olive-700 hover:bg-olive-50">2</button>
-                            <button
-                                class="px-4 py-2 border border-olive-300 rounded-lg text-olive-700 hover:bg-olive-50">3</button>
-                            <button
-                                class="px-4 py-2 border border-olive-300 rounded-lg text-olive-700 hover:bg-olive-50">
+                            <button class="px-2 md:px-4 py-1 md:py-2 bg-olive-700 text-white rounded-lg font-semibold">1</button>
+                            <button class="px-2 md:px-4 py-1 md:py-2 border border-olive-300 rounded-lg text-olive-700 hover:bg-olive-50">2</button>
+                            <button class="px-2 md:px-4 py-1 md:py-2 border border-olive-300 rounded-lg text-olive-700 hover:bg-olive-50">3</button>
+                            <button class="px-2 md:px-4 py-1 md:py-2 border border-olive-300 rounded-lg text-olive-700 hover:bg-olive-50">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
@@ -908,353 +920,9 @@
         <div class="loader ease-linear rounded-full border-4 border-t-4 border-olive-400 h-16 w-16"></div>
     </div>
 
-    <script>
-        // Configuration
-        const APP_URL = 'https://script.google.com/macros/s/AKfycbyU7ZcmN2avRhL6t8aTwSo8LQAc2kt2HlIqh7aHrMZWT1TkWF0vpgQ4k4E1Uv7j2Ugw/exec';
-        const ALLOWED_EMAIL = 'nccaalumbini@gmail.com';
-        let currentUser = null;
-        let isSidebarCollapsed = false;
-        let currentScreen = 'dashboard';
+    <div id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-        // Language switching
-        function switchLanguage(lang) {
-            document.querySelectorAll('[lang]').forEach(el => {
-                el.classList.toggle('hidden', el.lang !== lang);
-            });
-        }
-
-        // Navigation functions
-        function showScreen(screenId) {
-            currentScreen = screenId;
-            document.querySelectorAll('#app > div').forEach(el => {
-                el.classList.toggle('hidden', el.id !== screenId);
-            });
-
-            const titles = {
-                'dashboard': { en: 'Dashboard', np: 'ड्यासबोर्ड' },
-                'addCadet': { en: 'Add Cadet', np: 'क्याडेट थप्नुहोस्' },
-                'viewCadets': { en: 'View Cadets', np: 'क्याडेट सूची' },
-                'reports': { en: 'Reports', np: 'रिपोर्टहरू' },
-                'settings': { en: 'Settings', np: 'सेटिङहरू' }
-            };
-
-            const titleEl = document.getElementById('screenTitle');
-            if (titleEl) {
-                titleEl.textContent = titles[screenId].en;
-                if (titleEl.nextElementSibling) {
-                    titleEl.nextElementSibling.textContent = titles[screenId].np;
-                }
-            }
-
-            // Update active nav item
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector(`button[onclick="showScreen('${screenId}')"]`).classList.add('active');
-
-            // Close mobile sidebar
-            document.getElementById('sidebar').classList.remove('open');
-
-            if (screenId === 'viewCadets') {
-                loadCadetTable();
-            }
-        }
-
-        // Toggle sidebar
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const app = document.getElementById('app');
-            isSidebarCollapsed = !isSidebarCollapsed;
-
-            if (isSidebarCollapsed) {
-                sidebar.classList.add('sidebar-collapsed');
-                sidebar.classList.remove('w-64');
-                sidebar.classList.add('w-20');
-                app.classList.remove('ml-64');
-                app.classList.add('ml-20');
-                // Hide logo text and nav-text
-                sidebar.querySelector('.text-lg').classList.add('hidden');
-                sidebar.querySelectorAll('.nav-text').forEach(el => el.classList.add('hidden'));
-                sidebar.querySelectorAll('.lang-text, .logout-text').forEach(el => el.classList.add('hidden'));
-                sidebar.querySelectorAll('.lang-btn, .logout-btn').forEach(el => el.classList.add('justify-center'));
-                sidebar.querySelector('.sidebar-footer').classList.add('items-center');
-                document.getElementById('sidebarToggle').innerHTML = '<i class="fas fa-chevron-right"></i>';
-            } else {
-                sidebar.classList.remove('sidebar-collapsed');
-                sidebar.classList.remove('w-20');
-                sidebar.classList.add('w-64');
-                app.classList.remove('ml-20');
-                app.classList.add('ml-64');
-                sidebar.querySelector('.text-lg').classList.remove('hidden');
-                sidebar.querySelectorAll('.nav-text').forEach(el => el.classList.remove('hidden'));
-                sidebar.querySelectorAll('.lang-text, .logout-text').forEach(el => el.classList.remove('hidden'));
-                sidebar.querySelectorAll('.lang-btn, .logout-btn').forEach(el => el.classList.remove('justify-center'));
-                sidebar.querySelector('.sidebar-footer').classList.remove('items-center');
-                document.getElementById('sidebarToggle').innerHTML = '<i class="fas fa-chevron-left"></i>';
-            }
-        }
-
-        // Loader
-        function showLoader() {
-            document.getElementById('loader').classList.remove('hidden');
-        }
-        function hideLoader() {
-            document.getElementById('loader').classList.add('hidden');
-        }
-
-        // Logout
-        function logout() {
-            sessionStorage.removeItem('nccaa_user');
-            google.accounts.id.disableAutoSelect();
-            location.reload();
-        }
-
-        // Search Cadets
-        function searchCadets() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('#cadetTableBody tr').forEach(row => {
-                row.style.display = row.textContent.toLowerCase().includes(query) ? '' : 'none';
-            });
-        }
-        document.getElementById('searchInput').addEventListener('input', searchCadets);
-
-        // Google Sign-In
-        function handleLogin(response) {
-            showLoader();
-            const payload = JSON.parse(atob(response.credential.split('.')[1]));
-            if (payload.email === ALLOWED_EMAIL) {
-                currentUser = payload;
-                sessionStorage.setItem('nccaa_user', JSON.stringify(payload));
-                document.getElementById('userName').textContent = payload.name;
-                showApp();
-                loadDashboardStats();
-            } else {
-                alert('Access restricted to NCCAA administrators only');
-                google.accounts.id.disableAutoSelect();
-            }
-            hideLoader();
-        }
-
-        // Form submission
-        document.getElementById('cadetForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            showLoader();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-            try {
-                const response = await fetch(APP_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(data)
-                });
-                const result = await response.json();
-                if (result.success) {
-                    alert('Cadet registered successfully!');
-                    e.target.reset();
-                    loadDashboardStats();
-                    showScreen('dashboard');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Registration failed. Please try again.');
-            }
-            hideLoader();
-        });
-
-        // Dashboard stats
-        async function loadDashboardStats() {
-            showLoader();
-            try {
-                const response = await fetch(`${APP_URL}?action=stats`);
-                const result = await response.json();
-                if (result.success) {
-                    document.getElementById('totalCadets').textContent = result.stats.total;
-                    document.getElementById('maleCadets').textContent = result.stats.male;
-                    document.getElementById('femaleCadets').textContent = result.stats.female;
-                }
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            }
-            hideLoader();
-        }
-
-        async function loadCadetTable() {
-            showLoader();
-            try {
-                // Get all districts
-                const districtsRes = await fetch(`${APP_URL}?action=districts`);
-                const districtsData = await districtsRes.json();
-                let allCadets = [];
-                for (const district of districtsData.districts) {
-                    const cadetRes = await fetch(`${APP_URL}?action=cadets&district=${encodeURIComponent(district)}`);
-                    const cadetData = await cadetRes.json();
-                    if (cadetData.success) {
-                        allCadets = allCadets.concat(cadetData.cadets.map(cadet => ({
-                            ...cadet,
-                            District: district
-                        })));
-                    }
-                }
-                renderCadetTable(allCadets);
-            } catch (error) {
-                console.error('Error loading cadets:', error);
-            }
-            hideLoader();
-        }
-
-        function renderCadetTable(cadets) {
-            const tbody = document.getElementById('cadetTableBody');
-            tbody.innerHTML = '';
-            cadets.forEach((cadet, idx) => {
-                // Use timestamp + district as unique ID
-                const cadetId = `${cadet.Timestamp}_${cadet.District}`;
-                tbody.innerHTML += `
-            <tr>
-                <td class="py-4 px-6">C${idx + 1}</td>
-                <td class="py-4 px-6 font-medium">${cadet.Name}</td>
-                <td class="py-4 px-6"><span class="bg-olive-100 text-olive-800 px-3 py-1 rounded-full text-sm">${cadet.Rank}</span></td>
-                <td class="py-4 px-6">${cadet.Contact}</td>
-                <td class="py-4 px-6">${cadet.Gender}</td>
-                <td class="py-4 px-6">${cadet['School Name']}</td>
-                <td class="py-4 px-6">${cadet.District}</td>
-                <td class="py-4 px-6">
-                    <div class="flex gap-2">
-                        <button class="text-blue-600 hover:text-blue-800" onclick="viewCadet('${cadetId}')"><i class="fas fa-eye"></i></button>
-                        <button class="text-olive-600 hover:text-olive-800" onclick="editCadet('${cadetId}')"><i class="fas fa-edit"></i></button>
-                        <button class="text-red-600 hover:text-red-800" onclick="deleteCadet('${cadetId}')"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </td>
-            </tr>
-        `;
-            });
-            window.cadetList = cadets; // Store for later use
-        }
-
-        function showModal(cadet) {
-            // Fill modal fields
-            document.getElementById('cadetModalName').textContent = cadet.Name || '';
-            document.getElementById('cadetModalRank').textContent = cadet.Rank || '';
-            document.getElementById('cadetModalDistrict').textContent = cadet.District || '';
-            document.getElementById('cadetModalContact').textContent = cadet.Contact || '';
-            document.getElementById('cadetModalGender').textContent = cadet.Gender || '';
-            document.getElementById('cadetModalSchool').textContent = cadet['School Name'] || '';
-            document.getElementById('cadetModalBatch').textContent = cadet['NCC Batch'] || '';
-            document.getElementById('cadetModalPassout').textContent = cadet['Passout Year'] || '';
-            document.getElementById('cadetModalEmail').textContent = cadet.Email || '';
-            document.getElementById('cadetModalAddress').textContent = cadet.Address || '';
-            document.getElementById('cadetModalGuardianName').textContent = cadet['Guardian Name'] || '';
-            document.getElementById('cadetModalGuardianContact').textContent = cadet['Guardian Contact'] || '';
-            document.getElementById('cadetModalRelation').textContent = cadet.Relation || '';
-            document.getElementById('cadetModal').classList.remove('hidden');
-        }
-
-        // Close modal logic
-        document.getElementById('closeCadetModal').addEventListener('click', () => {
-            document.getElementById('cadetModal').classList.add('hidden');
-        });
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') document.getElementById('cadetModal').classList.add('hidden');
-        });
-
-        // Update viewCadet to use showModal
-        function viewCadet(cadetId) {
-            const cadet = window.cadetList.find(c => `${c.Timestamp}_${c.District}` === cadetId);
-            if (!cadet) return;
-            showModal(cadet);
-        }
-
-        // Initialize app
-        function showApp() {
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('appContainer').classList.remove('hidden');
-            switchLanguage('en'); // Default language
-            showScreen('dashboard');
-        }
-
-        // Check session on load
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedUser = sessionStorage.getItem('nccaa_user');
-            if (savedUser && JSON.parse(savedUser).email === ALLOWED_EMAIL) {
-                currentUser = JSON.parse(savedUser);
-                document.getElementById('userName').textContent = currentUser.name;
-                showApp();
-                loadDashboardStats();
-            }
-
-            // Set up event listeners
-            document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
-            document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-                document.getElementById('sidebar').classList.toggle('open');
-            });
-
-            // Auto logout when tab closes
-            window.addEventListener('beforeunload', () => {
-                sessionStorage.removeItem('nccaa_user');
-            });
-        });
-
-        function doPost(e) {
-            return ContentService
-                .createTextOutput(JSON.stringify({ success: true }))
-                .setMimeType(ContentService.MimeType.JSON)
-                .setHeader("Access-Control-Allow-Origin", "*");
-        }
-
-        function editCadet(cadetId) {
-            const cadet = window.cadetList.find(c => `${c.Timestamp}_${c.District}` === cadetId);
-            if (!cadet) return;
-            document.getElementById('editName').value = cadet.Name || '';
-            document.getElementById('editRank').value = cadet.Rank || '';
-            document.getElementById('editContact').value = cadet.Contact || '';
-            document.getElementById('editGender').value = cadet.Gender || '';
-            document.getElementById('editSchool').value = cadet['School Name'] || '';
-            document.getElementById('editBatch').value = cadet['NCC Batch'] || '';
-            document.getElementById('editPassoutYear').value = cadet['Passout Year'] || '';
-            document.getElementById('editDistrict').value = cadet.District || '';
-            document.getElementById('editAddress').value = cadet.Address || '';
-            document.getElementById('editEmail').value = cadet.Email || '';
-            document.getElementById('editGuardianName').value = cadet['Guardian Name'] || '';
-            document.getElementById('editGuardianContact').value = cadet['Guardian Contact'] || '';
-            document.getElementById('editRelation').value = cadet.Relation || '';
-            document.getElementById('editTimestamp').value = cadet.Timestamp || '';
-            document.getElementById('editOriginalContact').value = cadet.Contact || '';
-            document.getElementById('editCadetModal').classList.remove('hidden');
-        }
-
-        document.getElementById('closeEditCadetModal').addEventListener('click', () => {
-            document.getElementById('editCadetModal').classList.add('hidden');
-        });
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') document.getElementById('editCadetModal').classList.add('hidden');
-        });
-
-        // Handle edit form submission (add your update logic here)
-        document.getElementById('editCadetForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            showLoader();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-            data.action = "edit"; // Specify edit action for backend
-
-            try {
-                const response = await fetch(APP_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(data)
-                });
-                const result = await response.json();
-                if (result.success) {
-                    alert('Cadet updated successfully!');
-                    document.getElementById('editCadetModal').classList.add('hidden');
-                    loadCadetTable(); // Refresh table
-                } else {
-                    alert('Update failed: ' + (result.error || 'Unknown error'));
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Update failed. Please try again.');
-            }
-            hideLoader();
-        });
-    </script>
+    <script src="assets/js/main.js"></script>
 </body>
 
 </html>
