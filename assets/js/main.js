@@ -1,9 +1,10 @@
 // Configuration
-const APP_URL = 'https://script.google.com/macros/s/AKfycbyU7ZcmN2avRhL6t8aTwSo8LQAc2kt2HlIqh7aHrMZWT1TkWF0vpgQ4k4E1Uv7j2Ugw/exec';
+const APP_URL = 'https://script.google.com/macros/s/AKfycbxY5-bISOEvAHQe_jqvt2uXN12Gz5CY3oNZKZp52nbzitkDaqsmVB0uuBDQY-Eb9gxm/exec';
 const ALLOWED_EMAILS = [
     'nccaalumbini@gmail.com',
     'dipaadhikary102@gmail.com',
-    'deepaadhikary102@gmail.com'
+    'kcpooja60@gmail.com',
+    'manishanepali155@gmail.com'
 ];
 let currentUser = null;
 let isSidebarCollapsed = false;
@@ -134,6 +135,67 @@ document.getElementById('cadetForm').addEventListener('submit', async (e) => {
     showLoader();
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
+
+    // Hide all previous errors
+    document.querySelectorAll('#cadetForm .border-red-500').forEach(el => el.classList.remove('border-red-500'));
+    document.querySelectorAll('#cadetForm [id^="error-"]').forEach(el => {
+        el.textContent = '';
+        el.classList.add('hidden');
+    });
+
+    let hasError = false;
+
+    // Cadet Number
+    if (!/^NCC-\d{5}$/.test(data.cadet_no)) {
+        const input = document.querySelector('[name="cadet_no"]');
+        input.classList.add('border-red-500');
+        document.getElementById('error-cadet_no').textContent = 'Cadet Number must be in NCC-XXXXX format (e.g., NCC-00123)';
+        document.getElementById('error-cadet_no').classList.remove('hidden');
+        hasError = true;
+    }
+
+    // Name
+    if (!data.name || !data.name.trim()) {
+        const input = document.querySelector('[name="name"]');
+        input.classList.add('border-red-500');
+        document.getElementById('error-name').textContent = 'Full Name is required';
+        document.getElementById('error-name').classList.remove('hidden');
+        hasError = true;
+    }
+
+    // Contact
+    if (!/^\d{10}$/.test(data.contact)) {
+        const input = document.querySelector('[name="contact"]');
+        input.classList.add('border-red-500');
+        document.getElementById('error-contact').textContent = 'Contact must be a 10-digit number';
+        document.getElementById('error-contact').classList.remove('hidden');
+        hasError = true;
+    }
+
+    // Email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+        const input = document.querySelector('[name="email"]');
+        input.classList.add('border-red-500');
+        document.getElementById('error-email').textContent = 'Invalid email address';
+        document.getElementById('error-email').classList.remove('hidden');
+        hasError = true;
+    }
+
+    // Guardian Contact
+    if (!/^\d{10}$/.test(data.guardian_contact)) {
+        const input = document.querySelector('[name="guardian_contact"]');
+        input.classList.add('border-red-500');
+        document.getElementById('error-guardian_contact').textContent = 'Guardian Contact must be a 10-digit number';
+        document.getElementById('error-guardian_contact').classList.remove('hidden');
+        hasError = true;
+    }
+
+    if (hasError) {
+        hideLoader();
+        return;
+    }
+
+    // If no errors, proceed to submit
     try {
         const response = await fetch(APP_URL, {
             method: 'POST',
@@ -145,10 +207,13 @@ document.getElementById('cadetForm').addEventListener('submit', async (e) => {
             e.target.reset();
             loadDashboardStats();
             showScreen('dashboard');
+        } else {
+            errorDiv.textContent = result.error || 'Registration failed. Please try again.';
+            errorDiv.classList.remove('hidden');
         }
     } catch (error) {
-        console.error('Error:', error);
-        alert('Registration failed. Please try again.');
+        errorDiv.textContent = 'Registration failed. Please try again.';
+        errorDiv.classList.remove('hidden');
     }
     hideLoader();
 });
@@ -198,18 +263,17 @@ function renderCadetTable(cadets) {
     const tbody = document.getElementById('cadetTableBody');
     tbody.innerHTML = '';
     cadets.forEach((cadet, idx) => {
-        // Use timestamp + district as unique ID
         const cadetId = `${cadet.Timestamp}_${cadet.District}`;
         tbody.innerHTML += `
         <tr>
-            <td class="py-4 px-6">C${idx + 1}</td>
-            <td class="py-4 px-6 font-medium">${cadet.Name}</td>
-            <td class="py-4 px-6"><span class="bg-olive-100 text-olive-800 px-3 py-1 rounded-full text-sm">${cadet.Rank}</span></td>
-            <td class="py-4 px-6">${cadet.Contact}</td>
-            <td class="py-4 px-6">${cadet.Gender}</td>
-            <td class="py-4 px-6">${cadet['School Name']}</td>
-            <td class="py-4 px-6">${cadet.District}</td>
-            <td class="py-4 px-6">
+            <td class="py-2 px-2">${cadet['Cadet Number'] || ''}</td>
+            <td class="py-2 px-2">${cadet.Name}</td>
+            <td class="py-2 px-2"><span class="bg-olive-100 text-olive-800 px-3 py-1 rounded-full text-sm">${cadet.Rank}</span></td>
+            <td class="py-2 px-2">${cadet.Contact}</td>
+            <td class="py-2 px-2">${cadet.Gender}</td>
+            <td class="py-2 px-2">${cadet['School Name']}</td>
+            <td class="py-2 px-2">${cadet.District}</td>
+            <td class="py-2 px-2">
                 <div class="flex gap-2">
                     <button class="text-blue-600 hover:text-blue-800" onclick="viewCadet('${cadetId}')"><i class="fas fa-eye"></i></button>
                     <button class="text-olive-600 hover:text-olive-800" onclick="editCadet('${cadetId}')"><i class="fas fa-edit"></i></button>
@@ -237,6 +301,7 @@ function showModal(cadet) {
     document.getElementById('cadetModalGuardianName').textContent = cadet['Guardian Name'] || '';
     document.getElementById('cadetModalGuardianContact').textContent = cadet['Guardian Contact'] || '';
     document.getElementById('cadetModalRelation').textContent = cadet.Relation || '';
+    document.getElementById('cadetModalCadetNo').textContent = cadet['Cadet Number'] || '';
     document.getElementById('cadetModal').classList.remove('hidden');
 }
 
@@ -309,6 +374,10 @@ function doPost(e) {
 function editCadet(cadetId) {
     const cadet = window.cadetList.find(c => `${c.Timestamp}_${c.District}` === cadetId);
     if (!cadet) return;
+
+    // Set all form fields
+    document.getElementById('editCadetNo').value = cadet['Cadet Number'] || '';
+    document.getElementById('editOriginalCadetNo').value = cadet['Cadet Number'] || '';
     document.getElementById('editName').value = cadet.Name || '';
     document.getElementById('editRank').value = cadet.Rank || '';
     document.getElementById('editContact').value = cadet.Contact || '';
@@ -322,25 +391,25 @@ function editCadet(cadetId) {
     document.getElementById('editGuardianName').value = cadet['Guardian Name'] || '';
     document.getElementById('editGuardianContact').value = cadet['Guardian Contact'] || '';
     document.getElementById('editRelation').value = cadet.Relation || '';
-    document.getElementById('editTimestamp').value = cadet.Timestamp || '';
-    document.getElementById('editOriginalContact').value = cadet.Contact || '';
+
     document.getElementById('editCadetModal').classList.remove('hidden');
 }
 
-document.getElementById('closeEditCadetModal').addEventListener('click', () => {
-    document.getElementById('editCadetModal').classList.add('hidden');
-});
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') document.getElementById('editCadetModal').classList.add('hidden');
-});
+// // Close modal when clicking outside the modal content
+// document.getElementById('editCadetModal').addEventListener('click', function (e) {
+//     if (e.target === this) {
+//         this.classList.add('hidden');
+//     }
+// });
 
-// Handle edit form submission (add your update logic here)
+// Edit form submission
 document.getElementById('editCadetForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     showLoader();
+
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
-    data.action = "edit"; // Specify edit action for backend
+    data.action = "edit";
 
     try {
         const response = await fetch(APP_URL, {
@@ -348,16 +417,49 @@ document.getElementById('editCadetForm').addEventListener('submit', async functi
             body: JSON.stringify(data)
         });
         const result = await response.json();
+
         if (result.success) {
             alert('Cadet updated successfully!');
             document.getElementById('editCadetModal').classList.add('hidden');
-            loadCadetTable(); // Refresh table
+            loadCadetTable(); // Refresh the table
         } else {
             alert('Update failed: ' + (result.error || 'Unknown error'));
         }
     } catch (error) {
         console.error('Error:', error);
         alert('Update failed. Please try again.');
+    } finally {
+        hideLoader();
     }
-    hideLoader();
 });
+document.getElementById('closeEditCadetModal').addEventListener('click', function () {
+    document.getElementById('editCadetModal').classList.add('hidden');
+});
+
+function deleteCadet(cadetId) {
+    if (!confirm('Are you sure you want to delete this cadet?')) return;
+    const cadet = window.cadetList.find(c => `${c.Timestamp}_${c.District}` === cadetId);
+    if (!cadet) return alert('Cadet not found.');
+
+    showLoader();
+
+    fetch(APP_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+            action: 'delete',
+            cadet_no: cadet['Cadet Number'],
+            district: cadet.District
+        })
+    })
+        .then(res => res.json())
+        .then(result => {
+            if (result.success) {
+                alert('Cadet deleted successfully!');
+                loadCadetTable();
+            } else {
+                alert('Delete failed: ' + (result.error || 'Unknown error'));
+            }
+        })
+        .catch(() => alert('Delete failed. Please try again.'))
+        .finally(hideLoader);
+}
