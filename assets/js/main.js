@@ -5,7 +5,8 @@ const ALLOWED_EMAILS = [
     'dipaadhikary102@gmail.com',
     'kcpooja60@gmail.com',
     'deepaadhikary102@gmail.com',
-    'manishanepali155@gmail.com'
+    'manishanepali155@gmail.com',
+    'mamatagc15@gmail.com'
 ];
 let currentUser = null;
 let isSidebarCollapsed = false;
